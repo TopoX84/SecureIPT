@@ -1,4 +1,4 @@
-# SecureIPTables
+# Secure IPTables
 
 A Shell script for securing IPTables on a Standard Web-server.
 
@@ -25,11 +25,12 @@ sudo service fail2ban restart
 
 
 
-# Basic DoS Protection With IPTables.
+# Description of Shell Script contents.
 
 This is basically a rundown of what is contained in the Shell Script.
 I'll try to be really brief when i explain what they do.
-Don't manually enter these, They might not be in the right orde. Use the Script.
+Don't manually enter these, They might not be in the right order. 
+Use the Shell Script.
 
 #Rule 1: Limit New Connections
 
