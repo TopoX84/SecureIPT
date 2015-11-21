@@ -27,7 +27,7 @@ $TCPBurstEst = 50
 ###############################################################################
 
 #########################################################
-#You don't need to change below this line               #
+#You don't need to change anything below this line               #
 #########################################################
 
 echo "The setup is planning on configuring IPTables on your behalf"
