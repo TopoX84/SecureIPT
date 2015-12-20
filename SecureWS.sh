@@ -118,7 +118,7 @@ echo "Lets stop ICMP SMURF Attacks at the Door."
 
 sudo iptables -A INPUT -p icmp -m icmp --icmp-type address-mask-request -j DROP
 sudo iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP
-sudo iptables -A INPUT -p icmp -m icmp -m limit --limit 1/second -j ACCEPT
+sudo iptables -A INPUT -p icmp -m icmp --icmp-type 0 -m limit --limit 1/second -j ACCEPT
 
 sleep 1
 echo "Done!"
