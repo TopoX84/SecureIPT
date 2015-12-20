@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ####################################################################
-# Copyright 2015 Samuel Christison, May be adapted freely.         #
+# No-Copyright 2015 Samuel Christison, May be adapted freely.      #
 # This script will stop most port scanning attempts, UDP Floods,   #
 # SYN Floods, TCP Floods, Handshake Exploits, XMAS Packets,        #
 # Smurf Attacks, ICMP Bombs, LAND attacks and RST Floods.          #
