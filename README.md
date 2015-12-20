@@ -6,30 +6,7 @@ Actually works now without modification.
 
 You will need to run the script as Root. (Required for changing IPTables filters)
 
-
-# Extra Security
-
-You should also install Denyhosts and Fail2Ban because these programs deal with various Authentication Failures and then ban IP Addresses appropriately. (For 3 days by default)
-
-You should research both of these tools, Because there are a lot of beneficial features for businesses big and small.
-
-```
-sudo apt-get update
-sudo apt-get install denyhosts
-sudo apt-get install fail2ban
-```
-
-Leave the settings as default unless you've changed your SSH port, 
-otherwise you need to Google how to configure these programs.
-
-```
-sudo service denyhosts restart
-sudo service fail2ban restart
-```
-
-
-
-# Description of Shell Script contents.
+# SecureIPT Contents.
 
 This is a basic rundown of what's contained in the Shell Script.
 Don't manually enter these unless you fully understand what you are doing.
@@ -206,4 +183,28 @@ We accept UDP packets go to the DNS server.
 
 We accept UDP packets coming from the DNS server.
 
-We DROP anything else. 
+We DROP any other UDP packet. 
+
+
+
+
+# Extra Security
+
+You should also install Denyhosts and Fail2Ban because these programs deal with various Authentication Failures and then ban IP Addresses appropriately. (For 3 days by default)
+
+You should research both of these tools, Because there are a lot of beneficial features for businesses big and small.
+
+```
+sudo apt-get update
+sudo apt-get install denyhosts
+sudo apt-get install fail2ban
+```
+
+Leave the settings as default unless you've changed your SSH port, 
+otherwise you need to Google how to configure these programs.
+
+```
+sudo service denyhosts restart
+sudo service fail2ban restart
+```
+
