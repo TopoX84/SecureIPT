@@ -1,12 +1,18 @@
-# Secure IPTables
+# Secure/Strict IPTables Rules
 
-A Shell script for securing IPTables from common Denial of Service attacks.
+A Shell script that sets up your firewall (IPtables) to completely mitigate common Denial of Service attacks.
 
-Actually works now without modification.
+A big enough *Distributed* Denial of Service attack will not be stopped by this, but it raises the bar *SIGNIFICANTLY* (TDS) In theory if your server is fast enough to throw away the packets it shouldn't ever go "down" and you can give IPtables another leg-up towards this end by setting its CPU Priority to be extremely high. Your CPU usage will be neg- unless you're being DDoS'd; at which point your resources you were reserving for clients aren't being used. (In most cases, Unless you have weird caching etc)
 
+`renice {priority} pid`
+`-20 is the Highest Priority, Lowest "Niceness"`
+`19 is the Lowest Priority, Highest Niceness"`
+  
+  
+  
 You will need to run the script as Root. (Required for changing IPTables filters)
 
-SIP allows you to specify 3 Extra ports (TCP) to be opened bidirectionally, 
+SIP allows you to specify 3 Extra ports of your choice (TCP) to be opened bidirectionally.
 
 These can be changed with any text editor.
 
@@ -20,13 +26,14 @@ ExtraTwoP=28018
 ExtraThree="false"
 ExtraThreeP=0
 ```
-Do not add spaces, They matter when declaring a variable in a shell script.
+Do not add spaces. You've been warned.
 
 
 # SecureIPT Contents.
 
 This is a basic rundown of what's contained in the Shell Script.
-Don't manually enter these unless you fully understand what you are doing.
+
+DO NOT manually enter these unless you fully understand what you are doing and how it will affect your current rules!!
 
 #Rule 1: Limit New Connections
 
