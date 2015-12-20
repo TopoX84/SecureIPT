@@ -116,8 +116,8 @@ sudo iptables -A INPUT -d 255.255.255.255 -j DROP
 
 echo "Lets stop ICMP SMURF Attacks at the Door."
 
-sudo iptables -A INPUT -p icmp -m icmp --icmp-type address-mask-request -j DROP
-sudo iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP
+sudo iptables -A INPUT -p icmp -m icmp --icmp-type 17 address-mask-request -j DROP
+sudo iptables -A INPUT -p icmp -m icmp --icmp-type 13 timestamp-request -j DROP
 sudo iptables -A INPUT -p icmp -m icmp -m limit --limit 1/second -j ACCEPT
 
 sleep 1
@@ -253,7 +253,7 @@ sleep 1
 echo "Done!"
 
 echo "HTTPS Port $SSL"
-iptables -A OUTPUT -p tcp -m tcp --dport $SSL-j ACCEPT
+iptables -A OUTPUT -p tcp -m tcp --dport $SSL -j ACCEPT
 
 sleep 1
 echo "Done!"
