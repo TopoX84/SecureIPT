@@ -13,14 +13,14 @@
 #################################################################################################
 #Ports for your services, You can change these before running the script.
 
-WEB = 80
-MAIL = 25
-DNS = 53
-SSL = 443
-SSH = 22
-LB = 8888
-TCPBurstNew = 200
-TCPBurstEst = 50
+WEB = "80"
+MAIL = "25"
+DNS = "53"
+SSL = "443"
+SSH = "22"
+LB = "8888"
+TCPBurstNew = "200"
+TCPBurstEst = "50"
 
 ###############################################################################
 #TCPBurstNew is how many packets a new connection can send in 1 request       #
