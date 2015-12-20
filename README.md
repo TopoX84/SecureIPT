@@ -1,6 +1,7 @@
 # Secure IPTables
 
-A Shell script for securing IPTables on a Standard Web-server.
+A Shell script for securing IPTables against retarded script kiddies.
+Actually works now, Sorry i didn't test the first version..
 
 You will need to give the script Root privledges to run it.
 
