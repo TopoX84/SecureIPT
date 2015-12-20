@@ -5,32 +5,36 @@
 # This script will stop most port scanning attempts, UDP Floods,   #
 # SYN Floods, TCP Floods, Handshake Exploits, XMAS Packets,        #
 # Smurf Attacks, ICMP Bombs, LAND attacks and RST Floods.          #
-# You need to give this script Root privileges Before you run it.  #
+#                                                                  #
+# You need to Chmod this script before you run it.                 #
 # sudo chmod 777 SecureIPtables.sh                                 #
 # sudo chmod +x SecureIPtables.sh                                  #
+####################################################################
 
-#################################################################################
-# Leaving ports: 80, 25, 53, 443 and 22 open by Default, Can  be changed below. #
-#################################################################################
+####################################################################
+# 80, 25, 53, 443 and 22 open by Default, Can  be changed below.   #
+####################################################################
 WEB=80
 MAIL=25
 DNS=53
 SSL=443
 SSH=22
 
-###############################################################################
-#TCPBurstNew is how many packets a new connection can send in 1 request       #
-###############################################################################
+####################################################################
+#TCPBurstNew: # of Packets a new connection can send in 1 request  #
+####################################################################
 TCPBurstNew=200
 TCPBurstEst=50
-###############################################################################
-#TCPBurstEst is how many packets an existing connection can send in 1 request.#
-###############################################################################
+#########################################################################
+#TCPBurstEst: # of Packets an existing connection can send in 1 request.#
+#########################################################################
 
 
 
-#################################################
-#            Extra Ports (TCP)                  #
+########################################################
+# Extra Ports to be Bi-Directionally Opened (TCP)      #
+########################################################
+
 ExtraOne="yes"
 ExtraOneP=8888
 
