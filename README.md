@@ -1,9 +1,10 @@
 # Secure IPTables
 
-A Shell script for securing IPTables against retarded script kiddies.
-Actually works now, Sorry i didn't test the first version..
+A Shell script for securing IPTables from common Denial of Service attacks.
 
-You will need to give the script Root privledges to run it.
+Actually works now without modification.
+
+You will need to run the script as Root. (Required for changing IPTables filters)
 
 
 # Extra Security
@@ -17,7 +18,7 @@ sudo apt-get install fail2ban
 ```
 
 Leave the settings as default unless you've changed your SSH port, 
-Then you need to Google how to configure these programs.
+otherwise you need to Google how to configure these programs.
 
 ```
 sudo service denyhosts restart
@@ -28,10 +29,8 @@ sudo service fail2ban restart
 
 # Description of Shell Script contents.
 
-This is basically a rundown of what is contained in the Shell Script.
-I'll try to be really brief when i explain what they do.
-Don't manually enter these, They might not be in the right order. 
-Use the Shell Script.
+This is a basic rundown of what's contained in the Shell Script.
+Don't manually enter these unless you fully understand what you are doing.
 
 #Rule 1: Limit New Connections
 
@@ -40,11 +39,10 @@ sudo iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m limit --limit 5
 ```
 
 We are Adding an INPUT rule.
-
- `-p tcp --dport 80 = We are looking for TCP traffic over port 80`
- 
-we are applying this to any new connections meeting the above conditions.
-We then limit the amount of "packets" that can be sent to 200, And when that limit is reached, We limit further attempts to 50 "packets" (In essence, You speed up for no reason, We slow you down)
+We are applying this to any new TCP connections.
+We then limit the amount of "packets" that can be sent in a burst to 200.
+When that limit is reached, We limit further attempts to 50 "packets"
+(In essence, You speed up for no reason, You get slowed down)
 We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
 #Rule 2: Limit Existing Connections
@@ -54,17 +52,29 @@ sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -m limit --limit 50/
 ```
 
 We are Adding an INPUT rule
-This is going to apply to already established connections and their related connections.
-We limit their requests to 50 packets a second (A "normal" person shouldn't need more then that)
-Again we Jump to ACCEPT those packets.
+This is going to apply to already established connections (UDP,TCP) and their related "connections".
+We limit their requests to 50 packets a second and don't allow them to "burst" packets.
+(This "assumes" your websites main payload will be delivered during the initial connection)
+We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
 #Rule 3: Dump Ugly Packets.
 
 ```
-sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,RST FIN,RST -j DROP sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,ACK FIN -j DROP sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
+sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP 
+sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP 
+sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j DROP 
+sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,RST FIN,RST -j DROP 
+sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,ACK FIN -j DROP 
+sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
 ```
 
-There's "a-lot" going here, So i will sum it up by saying, We are dropping packets from lame script kiddies, and anything else that isn't complete or compliant. No self respecting firewall should be lacking these rules by default (Yet they all are) This should protect you from lame flood attacks, well at least the ones not launched by "professionals"
+We are adding several INPUT rules.
+These rules only affect TCP related connections.
+These rules only apply to Ethernet Interface: `eth0`
+We check various TCP Flags to make sure the packet is Valid/Complete and not trying to hang us.
+If the packet meets any of these conditions, we throw it away because its shit.
+
+
 
 #Rule 3: Block Portscanning Attempts
 
@@ -75,39 +85,71 @@ sudo iptables -A PORT_SCANNING -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit -
 
 sudo iptables -A PORT_SCANNING -j DROP
 ```
-We create a new chain to monitor PORT SCANNING attempts, And then DROP them all on their head if they flood us. You may want to also create a log file, But we won't do that because theirs quota considerations you need to make.
+
+We create a new chain to monitor PORT SCANNING attempts.
+We make sure any "real" port scan attempts are Complete/Valid. (tcp-flags)
+We limit the amount of times any IP can ask for a specific port. (--limit 1/s)
+Drop any other Port Scanning attempt.
+
 
 # Rule 4: Block LAND Attacks
 
-`sudo iptables -A INPUT -s YOURSERVERIP/32 -j DROP`
+```
+sudo iptables -A INPUT -s 10.0.0.0/8 -j DROP
+sudo iptables -A INPUT -s 169.254.0.0/16 -j DROP
+sudo iptables -A INPUT -s 172.16.0.0/12 -j DROP
+sudo iptables -A INPUT -s 127.0.0.0/8 -j DROP
+sudo iptables -A INPUT -s 192.168.0.0/24 -j DROP
+sudo iptables -A INPUT -s 224.0.0.0/4 -j DROP
+sudo iptables -A INPUT -d 224.0.0.0/4 -j DROP
+sudo iptables -A INPUT -s 240.0.0.0/5 -j DROP
+sudo iptables -A INPUT -d 240.0.0.0/5 -j DROP
+sudo iptables -A INPUT -s 0.0.0.0/8 -j DROP
+sudo iptables -A INPUT -d 0.0.0.0/8 -j DROP
+sudo iptables -A INPUT -d 239.255.255.0/24 -j DROP
+sudo iptables -A INPUT -d 255.255.255.255 -j DROP
+```
 
-This one isn't a copy and paste. This will protect you from Spoofed IP's pretending to be you, Although this should be caught already by the above rules its better to be safe then DoS'd
+We are creating an INPUT rule.
+We check to see if the source/dest is a private IP and drop it.
+We check to see if the source/dest is from a private SubNet and drop it.
+
 
 # Rule 5: Block XMAS Packets.
 
 `sudo iptables -A INPUT -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP`
 
-Basically, A really cool and easy way to kill a server, Is send a whole heap of packets at it with every single option, To avoid DoSing ourselves, We first specify we want to check all flags and then we make exceptions for the options that are "Mandatory" and then drop anything else we deem suspect.
+We are creating an INPUT rule.
+It only applys to TCP connections.
+We check certain TCP flags are true and DROP the packet.
 
 #Rule 6: Blocking Smurf Attacks
 
-`sudo iptables -A INPUT -p icmp -m limit --limit 2/second --limit-burst 2 -j ACCEPT`
+`sudo iptables -A INPUT -p icmp -m limit --limit 1/second --limit-burst 2 -j ACCEPT`
 
-OR IF YOUR NOT USING IT, DROP IT I'll let you decide which one is right You also have the option of specifying what types of ICMP packets you want to drop, But you can read about that somewhere.
+We are creating an INPUT rule.
+It only applys to ICMP packets.
+It applys to all Connections. New/Existing.
+We limit the amount of requests for an ICMP packet a client can make per second.
+We allow a little room for icmp to breathe. (burst)
 
 `sudo iptables -A INPUT -p icmp -j DROP`
 
-First, Go read about what ICMP is. Then scratch your head about its legitimate existence. Anyway, What this rule does is limits the requests to what is still a a pretty high level of 1 every 2 seconds. You don't want your server to be spammed with these.
+We are creating an INPUT rule.
+It applys to all Connections. New/Existing.
+It only applys to ICMP packets.
+We throw away the ICMP packets. (DROP)
 
 #Rule 7: The More Advanced SYN Filter
 
-Open, So you managed to get around the malformed packet filter, Good for you.
+Okay, So you managed to get around the malformed packet filter, Good for you. Now RIP.
 
+` sudo iptables -D INPUT -p tcp --dport 80 -m state --state NEW -m limit --limit 50/minute --limit-burst 200 -j ACCEPT`
 ` sudo iptables -A INPUT -p tcp -m state --state NEW -m limit --limit 2/second --limit-burst 2 -j ACCEPT`
 
-If your having real problems with SYN floods, Then you can use this to SEVERELY limit new connections. If you already added the rule at the top you need to run this before you add the above rule:
+If your having real problems with SYN floods, Then you can use this to SEVERELY limit new connections. 
+(!MUST! be run in that order)
 
-sudo iptables -D INPUT -p tcp --dport 80 -m state --state NEW -m limit --limit 50/minute --limit-burst 200 -j ACCEPT
 
 #Rule 8: NO UDP Please
 ```
@@ -118,4 +160,9 @@ sudo iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 sudo iptables -A INPUT -p udp -j DROP
 sudo iptables -A OUTPUT -p udp -j DROP
 ```
-By now you should be catching on and be able to see that this will only let UDP traffic go to your DNS Server, And we just black hole anything else. You can further lock this down by changing some BIND settings (Not covered here)
+We are creating an INPUT rule.
+The rule only applys to UDP packets.
+The rule only applys to Port 53 (DNS)
+We accept UDP packets go to the DNS server.
+We accept UDP packets coming from the DNS server.
+We DROP anything else.
