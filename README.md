@@ -1,16 +1,20 @@
 # Secure/Strict IPTables Rules
 
+**You will need to run this shell script as Root to get the full benefits**
+
 A Shell script that sets up your firewall (IPtables) to completely mitigate common Denial of Service attacks.
 
-A big enough *Distributed* Denial of Service attack will not be stopped by this, but it raises the bar *SIGNIFICANTLY* (TDS) In theory if your server is fast enough to throw away the packets it shouldn't ever go "down" and you can give IPtables another leg-up towards this end by setting its CPU Priority to be extremely high. Your CPU usage will be neg- unless you're being DDoS'd; at which point your resources you were reserving for clients aren't being used. (In most cases, Unless you have weird caching etc)
+A big enough *Distributed* Denial of Service attack will not be stopped by this, but it raises the bar *significantly* (TDS) In theory if your server is fast enough to throw away the packets it should never go "down" and you can give IPtables a leg-up towards this end by setting its CPU Priority to be extremely high. 
 
 `renice {priority} pid`
+
 `-20 is the Highest Priority, Lowest "Niceness"`
+
 `19 is the Lowest Priority, Highest Niceness"`
+
+Your CPU usage will be negligent unless you're being DDoS'd and at that point the resources you were reserving for clients aren't being used anyway in most cases.
   
-  
-  
-You will need to run the script as Root. (Required for changing IPTables filters)
+# Extra Ports
 
 SIP allows you to specify 3 Extra ports of your choice (TCP) to be opened bidirectionally.
 
@@ -26,14 +30,10 @@ ExtraTwoP=28018
 ExtraThree="false"
 ExtraThreeP=0
 ```
-Do not add spaces. You've been warned.
 
+**DO NOT** manually enter these commands unless you **FULLY** understand what you are doing and how it will affect your **current rules!!**
 
-# SecureIPT Contents.
-
-This is a basic rundown of what's contained in the Shell Script.
-
-DO NOT manually enter these unless you fully understand what you are doing and how it will affect your current rules!!
+If you don't know exactly what your current rules are, Just run the shell script. You risk seriously breaking your VPS/Dedi if you mis-configure your firewall. (You might block SSH ports, For instance)
 
 #Rule 1: Limit New Connections
 
