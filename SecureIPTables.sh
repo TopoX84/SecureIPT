@@ -282,7 +282,7 @@ then
    echo "Extra Port One Opened: $ExtraOneP"
    iptables -A INPUT -p tcp -m tcp --dport $ExtraOneP -j ACCEPT
 else
-    echo "Not Using Extra Port One.."
+    echo "INPUT RULES: Not Using Extra Port One!"
 fi
 
 if [ "$ExtraTwo" = "yes" ]
@@ -290,7 +290,7 @@ then
    echo "Extra Port Two Opened: $ExtraTwoP"
    iptables -A INPUT -p tcp -m tcp --dport $ExtraTwoP -j ACCEPT
 else
-    echo "Not Using Extra Port Two.."
+    echo "INPUT RULES: Not Using Extra Port Two!"
 fi
 
 if [ "$ExtraThree" = "yes" ]
@@ -298,7 +298,7 @@ then
    echo "Extra Port Three Opened: $ExtraThreeP"
    iptables -A INPUT -p tcp -m tcp --dport $ExtraThreeP -j ACCEPT
 else
-    echo "Not Using Extra Port Three.."
+    echo "INPUT RULES: Not Using Extra Port Three!"
 fi
 
 sleep 1
@@ -308,7 +308,7 @@ echo "Lastly we block ALL OTHER INPUT TRAFFIC."
 sudo iptables -A INPUT -j REJECT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 ################# Below are OUTPUT iptables rules #############################################
 echo "NOW LETS SET UP OUTPUTS"
@@ -356,23 +356,23 @@ then
    echo "Extra Port One Opened: $ExtraOneP"
    iptables -A OUTPUT -p tcp -m tcp --dport $ExtraOneP -j ACCEPT
 else
-    echo "Not Using Extra Port One."
+    echo "OUTPUT RULES: Not Using Extra Port One!"
 fi
 
 if [ "$ExtraTwo" = "yes" ]
 then
-   echo "Extra Port Two Opened: $ExtraTwoP"
+   echo "OUTPUT RULES: Extra Port Two Opened: $ExtraTwoP"
    iptables -A OUTPUT -p tcp -m tcp --dport $ExtraTwoP -j ACCEPT
 else
-    echo "Not Using Extra Port Two."
+    echo "Not Using Extra Port Two!"
 fi
 
 if [ "$ExtraThree" = "yes" ]
 then
-   echo "Extra Port Three Opened: $ExtraThreeP"
+   echo "OUTPUT RULES: Extra Port Three Opened: $ExtraThreeP"
    iptables -A OUTPUT -p tcp -m tcp --dport $ExtraThreeP -j ACCEPT
 else
-    echo "Not Using Extra Port Three."
+    echo "Not Using Extra Port Three!"
 fi
 
 sleep 2
