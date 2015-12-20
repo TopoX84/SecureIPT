@@ -31,6 +31,9 @@ ExtraThree="false"
 ExtraThreeP=0
 ```
 
+#Important Section!
+
+
 **DO NOT** manually enter these commands unless you **FULLY** understand what you are doing and how it will affect your **current rules!!**
 
 If you don't know exactly what your current rules are, Just run the shell script. You risk seriously breaking your VPS/Dedi if you mis-configure your firewall. (You might block SSH ports, For instance)
