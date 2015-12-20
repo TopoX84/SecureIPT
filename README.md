@@ -42,7 +42,9 @@ If you disregard this notice you will need to run the shell script anyway to fix
 
 **End warning**
 
-#Rule 1: Limit New Connections
+*Some of the rules in the script haven't been explained below, I will get around to it.*
+
+#Limit New Connections
 
 ```
 sudo iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m limit --limit 50/minute --limit-burst 200 -j ACCEPT
@@ -60,7 +62,7 @@ When that limit is reached, We limit further attempts to 50 "packets"
 
 We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
-#Rule 2: Limit Existing Connections
+#Limit Existing Connections
 
 ```
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -m limit --limit 50/second --limit-burst 50 -j ACCEPT
@@ -76,7 +78,7 @@ We limit their requests to 50 packets a second and don't allow them to "burst" p
 
 We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
-#Rule 3: Dump Invalid/Malformed Packets.
+#Dump Invalid/Malformed Packets.
 
 ```
 sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP 
@@ -99,7 +101,7 @@ If the packet meets any of these conditions, we throw it away because its shit.
 
 
 
-#Rule 3: Limit Portscanning.
+#Limit Portscanning.
 
 It is bad to outright block the option to query your ports, 
 
@@ -125,7 +127,7 @@ Drop any other Port Scanning attempt.
 
 Chains can create LOG FILES, You should look into this if that is useful in your situation.
 
-# Rule 4: Block LAND Attacks
+#Block LAND Attacks
 
 ```
 sudo iptables -A INPUT -s 10.0.0.0/8 -j DROP
@@ -150,7 +152,7 @@ We check to see if the source/dest is a private IP and drop it.
 We check to see if the source/dest is from a private SubNet and drop it.
 
 
-# Rule 5: Block XMAS Packets.
+#Block XMAS Packets.
 
 `sudo iptables -A INPUT -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP`
 
@@ -160,7 +162,7 @@ It only applys to TCP connections.
 
 We check certain TCP flags are true and DROP the packet.
 
-#Rule 6: Blocking Smurf Attacks
+#Blocking Smurf Attacks
 
 `sudo iptables -A INPUT -p icmp -m limit --limit 1/second --limit-burst 2 -j ACCEPT`
 
@@ -184,7 +186,7 @@ It only applys to ICMP packets.
 
 We throw away the ICMP packets. (DROP)
 
-#Rule 7: The More Advanced SYN Filter
+#The More Advanced SYN Filter
 
 Okay, So you managed to get around the malformed packet filter, Good for you. Now RIP.
 
@@ -195,7 +197,7 @@ If your having real problems with SYN floods, Then you can use this to SEVERELY 
 (!MUST! be run in that order)
 
 
-#Rule 8: NO UDP except DNS please!
+#NO UDP except DNS please!
 ```
 sudo iptables -A INPUT -p udp --sport 53 -j ACCEPT
 sudo iptables -A INPUT -p udp --dport 53 -j ACCEPT
