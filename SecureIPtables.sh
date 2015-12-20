@@ -7,8 +7,8 @@
 # SYN Floods, TCP Floods, Handshake Exploits, XMAS Packets,        #
 # Smurf Attacks, ICMP Bombs, LAND attacks and RST Floods.          #
 # You need to give this script Root privileges Before you run it.  #
-# sudo chmod 777 SecureWS.sh                                       #
-# sudo chmod +x SecureWS.sh                                       #
+# sudo chmod 777 SecureIPtables.sh                                 #
+# sudo chmod +x SecureIPtables.sh                                  #
 #################################################################################################
 # This script by default will leave open ports 80, 25, 53, 443, 22.                             #
 #################################################################################################
@@ -196,7 +196,7 @@ echo "DNS Port $DNS"
 sudo iptables -A INPUT -p udp -m udp --dport $DNS -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "SSL Port $SSL"
 sudo iptables -A INPUT -p tcp -m tcp --dport $SSL -j ACCEPT
@@ -283,7 +283,6 @@ echo "Reject Forwarding  traffic"
 iptables -A FORWARD -j REJECT
 
 sleep 1
-echo "Done!"
-echo "Your Webserver is now more secure then it was 5 minutes ago"
-sleep 5
+echo "Your Webserver is now more secure then it was 5 minutes ago! Have a nice Day!"
+sleep 3
 exit
