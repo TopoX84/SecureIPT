@@ -18,6 +18,7 @@ $MAIL = 25
 $DNS = 53
 $SSL = 443
 $SSH = 22
+$LB = 8888
 $TCPBurstNew = 200
 $TCPBurstEst = 50
 
@@ -54,20 +55,20 @@ sleep 1
 echo "Lets start by Flushing your old Rules."
 sleep 0.1
 
-iptables -F
+sudo iptables -F
 
 echo "Done"
 sleep 0.1
 echo "We need to create the Default rule and Accept LoopBack Input."
 sleep 0.1
 
-iptables -A INPUT -i lo -p all -j ACCEPT
+sudo iptables -A INPUT -i lo -p all -j ACCEPT
 
 echo "Enabling the 3 Way Hand Shake and limiting TCP Requests."
 echo "Note if you have cloud flare the limit needs to be rather high or you need to make a set of separate rules for their IP range."
 sleep 2
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport $WEB -m state --state NEW -m limit --limit 50/minute --limit-burst $TCPBurstNew -j ACCEPT
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -m limit --limit 50/second --limit-burst $TCPBurstEst -j ACCEPT
 
@@ -75,57 +76,57 @@ echo "Adding Protection from LAND Attacks, If these IPs look required, please st
 
 echo "10.0.0.0/8 DROP"
 sleep 1
-iptables -A INPUT -s 10.0.0.0/8 -j DROP
+sudo iptables -A INPUT -s 10.0.0.0/8 -j DROP
 echo "169.254.0.0/16 DROP"
 sleep 1
-iptables -A INPUT -s 169.254.0.0/16 -j DROP
+sudo iptables -A INPUT -s 169.254.0.0/16 -j DROP
 echo "172.16.0.0/12 DROP"
 sleep 1
-iptables -A INPUT -s 172.16.0.0/12 -j DROP
+sudo iptables -A INPUT -s 172.16.0.0/12 -j DROP
 echo "127.0.0.0/8 DROP"
 sleep 1
-iptables -A INPUT -s 127.0.0.0/8 -j DROP
+sudo iptables -A INPUT -s 127.0.0.0/8 -j DROP
 echo "192.168.0.0/24 DROP"
 sleep 1
-iptables -A INPUT -s 192.168.0.0/24 -j DROP
+sudo iptables -A INPUT -s 192.168.0.0/24 -j DROP
 echo "224.0.0.0/4 SOURCE DROP"
 sleep 1
-iptables -A INPUT -s 224.0.0.0/4 -j DROP
+sudo iptables -A INPUT -s 224.0.0.0/4 -j DROP
 echo "224.0.0.0/4 DEST DROP"
 sleep 1
-iptables -A INPUT -d 224.0.0.0/4 -j DROP
+sudo iptables -A INPUT -d 224.0.0.0/4 -j DROP
 echo "224.0.0.0/5 SOURCE DROP"
 sleep 1
-iptables -A INPUT -s 240.0.0.0/5 -j DROP
+sudo iptables -A INPUT -s 240.0.0.0/5 -j DROP
 echo "224.0.0.0/5 DEST DROP"
 sleep 1
-iptables -A INPUT -d 240.0.0.0/5 -j DROP
+sudo iptables -A INPUT -d 240.0.0.0/5 -j DROP
 echo "0.0.0.0/8 SOURCE DROP"
 sleep 1
-iptables -A INPUT -s 0.0.0.0/8 -j DROP
+sudo iptables -A INPUT -s 0.0.0.0/8 -j DROP
 echo "0.0.0.0/8 DEST DROP"
 sleep 1
-iptables -A INPUT -d 0.0.0.0/8 -j DROP
+sudo iptables -A INPUT -d 0.0.0.0/8 -j DROP
 echo "239.255.255.0/24 DROP SUBNETS"
 sleep 1
-iptables -A INPUT -d 239.255.255.0/24 -j DROP
+sudo iptables -A INPUT -d 239.255.255.0/24 -j DROP
 echo "255.255.255.255 DROP SUBNETS"
 sleep 1
-iptables -A INPUT -d 255.255.255.255 -j DROP
+sudo iptables -A INPUT -d 255.255.255.255 -j DROP
 
 echo "Lets stop ICMP SMURF Attacks at the Door."
 
-iptables -A INPUT -p icmp -m icmp --icmp-type address-mask-request -j DROP
-iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP
-iptables -A INPUT -p icmp -m icmp -m limit --limit 1/second -j ACCEPT
+sudo iptables -A INPUT -p icmp -m icmp --icmp-type address-mask-request -j DROP
+sudo iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP
+sudo iptables -A INPUT -p icmp -m icmp -m limit --limit 1/second -j ACCEPT
 
 sleep 1
 echo "Done\!"
 echo "Next were going to drop all INVALID packets\."
 
-iptables -A INPUT -m state --state INVALID -j DROP
-iptables -A FORWARD -m state --state INVALID -j DROP
-iptables -A OUTPUT -m state --state INVALID -j DROP
+sudo iptables -A INPUT -m state --state INVALID -j DROP
+sudo iptables -A FORWARD -m state --state INVALID -j DROP
+sudo iptables -A OUTPUT -m state --state INVALID -j DROP
 
 sleep 1
 echo "Done\!"
@@ -142,7 +143,7 @@ sleep 1
 echo "Done\!"
 echo "Now we enable RST Flood Protection MORE SMURF PROTECTION"
 
-iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
 
 sleep 1
 echo "Done\!"
@@ -150,67 +151,73 @@ echo "Protection from Port Scans."
 echo "Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)"
 sleep 1
 
-iptables -A INPUT -m recent --name portscan --rcheck --seconds 86400 -j DROP
-iptables -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP
+sudo iptables -A INPUT -m recent --name portscan --rcheck --seconds 86400 -j DROP
+sudo iptables -A FORWARD -m recent --name portscan --rcheck --seconds 86400 -j DROP
 
 echo "Adjusting..."
 echo "Banned IP addresses are removed from the list every 24 Hours."
 
-iptables -A INPUT -m recent --name portscan --remove
-iptables -A FORWARD -m recent --name portscan --remove
+sudo iptables -A INPUT -m recent --name portscan --remove
+sudo iptables -A FORWARD -m recent --name portscan --remove
 
 sleep 1
 echo "Done\!"
 echo "Creating rules to add scanners to the PortScanner list and log the attempt. Remember to set up QUOTA"
 
-iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
+sudo iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+sudo iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
-iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
-iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
+sudo iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
+sudo iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
 sleep 1
 echo "Done\!"
 echo "Lets block all incoming PINGS, Although they should be blocked already"
 
-iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j REJECT
+sudo iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j REJECT
 
 sleep 1
 echo "Done\!"
 echo "Allow the following ports through from outside"
 
 echo "SMTP Port $MAIL"
-iptables -A INPUT -p tcp -m tcp --dport $MAIL -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport $MAIL -j ACCEPT
 
 sleep 0.1
 echo "Done\!"
 
 echo "Web Port $WEB"
-iptables -A INPUT -p tcp -m tcp --dport $WEB -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport $WEB -j ACCEPT
 
 sleep 0.1
 echo "Done\!"
 
 echo "DNS Port $DNS"
-iptables -A INPUT -p udp -m udp --dport $DNS -j ACCEPT
+sudo iptables -A INPUT -p udp -m udp --dport $DNS -j ACCEPT
 
 sleep 1
 echo "Done\!"
 
 echo "SSL Port $SSL"
-iptables -A INPUT -p tcp -m tcp --dport $SSL -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport $SSL -j ACCEPT
 
 sleep 1
 echo "Done\!"
 
 echo "SSH Port $SSH"
-iptables -A INPUT -p tcp -m tcp --dport $SSH -j ACCEPT
+sudo iptables -A INPUT -p tcp -m tcp --dport $SSH -j ACCEPT
+
+sleep 1
+echo "Done\!"
+
+echo "LB Port $LB"
+sudo iptables -A INPUT -p tcp -m tcp --dport $LB -j ACCEPT
 
 sleep 1
 echo "Done Opening Ports For Web Access\!"
 
 echo "Lastly we block ALL OTHER INPUT TRAFFIC."
-iptables -A INPUT -j REJECT
+sudo iptables -A INPUT -j REJECT
 
 sleep 1
 echo "Done\!"
