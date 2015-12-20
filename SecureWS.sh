@@ -20,7 +20,7 @@ SSL=443
 SSH=22
 LB=8888
 TCPBurstNew=200
-TCPBurstEstm=50
+TCPBurstEst=50
 
 ###############################################################################
 #TCPBurstNew is how many packets a new connection can send in 1 request       #
@@ -120,7 +120,7 @@ sudo iptables -A INPUT -p icmp -m icmp --icmp-type timestamp-request -j DROP
 sudo iptables -A INPUT -p icmp -m icmp -m limit --limit 1/second -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Next were going to drop all INVALID packets\."
 
 sudo iptables -A INPUT -m state --state INVALID -j DROP
@@ -128,7 +128,7 @@ sudo iptables -A FORWARD -m state --state INVALID -j DROP
 sudo iptables -A OUTPUT -m state --state INVALID -j DROP
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Next we drop Valid but incomplete packets."
 
 sudo iptables -A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP 
@@ -139,13 +139,13 @@ sudo iptables -A INPUT -p tcp -m tcp --tcp-flags FIN,ACK FIN -j DROP
 sudo iptables -A INPUT -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Now we enable RST Flood Protection MORE SMURF PROTECTION"
 
 sudo iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Protection from Port Scans."
 echo "Attacking IP will be locked for 24 hours (3600 x 24 = 86400 Seconds)"
 sleep 1
@@ -160,7 +160,7 @@ sudo iptables -A INPUT -m recent --name portscan --remove
 sudo iptables -A FORWARD -m recent --name portscan --remove
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Creating rules to add scanners to the PortScanner list and log the attempt. Remember to set up QUOTA"
 
 sudo iptables -A INPUT -p tcp -m tcp --dport 139 -m recent --name portscan --set -j LOG --log-prefix "portscan:"
@@ -170,26 +170,26 @@ sudo iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --s
 sudo iptables -A FORWARD -p tcp -m tcp --dport 139 -m recent --name portscan --set -j DROP
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Lets block all incoming PINGS, Although they should be blocked already"
 
 sudo iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j REJECT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Allow the following ports through from outside"
 
 echo "SMTP Port $MAIL"
 sudo iptables -A INPUT -p tcp -m tcp --dport $MAIL -j ACCEPT
 
 sleep 0.1
-echo "Done\!"
+echo "Done!"
 
 echo "Web Port $WEB"
 sudo iptables -A INPUT -p tcp -m tcp --dport $WEB -j ACCEPT
 
 sleep 0.1
-echo "Done\!"
+echo "Done!"
 
 echo "DNS Port $DNS"
 sudo iptables -A INPUT -p udp -m udp --dport $DNS -j ACCEPT
@@ -201,19 +201,19 @@ echo "SSL Port $SSL"
 sudo iptables -A INPUT -p tcp -m tcp --dport $SSL -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "SSH Port $SSH"
 sudo iptables -A INPUT -p tcp -m tcp --dport $SSH -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "LB Port $LB"
 sudo iptables -A INPUT -p tcp -m tcp --dport $LB -j ACCEPT
 
 sleep 1
-echo "Done Opening Ports For Web Access\!"
+echo "Done Opening Ports For Web Access!"
 
 echo "Lastly we block ALL OTHER INPUT TRAFFIC."
 sudo iptables -A INPUT -j REJECT
@@ -229,7 +229,7 @@ iptables -A OUTPUT -o lo -j ACCEPT
 iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "Allow the following ports Access OUT from the INSIDE"
 
@@ -237,53 +237,52 @@ echo "SMTP Port $MAIL"
 iptables -A OUTPUT -p tcp -m tcp --dport $MAIL -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "DNS Port $DNS"
 iptables -A OUTPUT -p udp -m udp --dport $DNS -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "Web Port $WEB"
 iptables -A OUTPUT -p tcp -m tcp --dport $WEB -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "HTTPS Port $SSL"
 iptables -A OUTPUT -p tcp -m tcp --dport $SSL-j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "SSH Port $SSH"
 iptables -A OUTPUT -p tcp -m tcp --dport $SSH -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "Allow Outgoing PING Type ICMP Requests"
 
 iptables -A OUTPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "Lastly Reject all Output traffic"
 
 iptables -A OUTPUT -j REJECT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 
 echo "Reject Forwarding  traffic"
 
 iptables -A FORWARD -j REJECT
 
 sleep 1
-echo "Done\!"
+echo "Done!"
 echo "Your Webserver is now more secure then it was 5 minutes ago"
-echo "Hash On"
 sleep 5
 exit
