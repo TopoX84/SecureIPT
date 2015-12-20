@@ -33,12 +33,11 @@ TCPBurstEstm=50
 
 echo "The setup is planning on configuring IPTables on your behalf"
 echo "The following ports are being set up"
-echo "Your Stratum Port will be: $STRATUM"
 echo "Your SSH Port will be: $SSH"
 echo "Your DNS Port will be: $DNS"
 echo "Your SSL Port will be: $SSL"
 echo "Your MAIL Services SMTP Port will be: $MAIL"
-echo "Your WEB SERVER that serves your MPOS Pages will be: $WEB"
+echo "Your WEB SERVER port will be: $WEB"
 echo "If these are not correct, Please press Ctrl + C NOW"
 echo "The installer will continue in 5"
 sleep 1
