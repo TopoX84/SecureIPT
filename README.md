@@ -6,24 +6,22 @@ Actually works now without modification.
 
 You will need to run the script as Root. (Required for changing IPTables filters)
 
-SIP allows you to specify 3 Extra ports (TCP) to be opened bidirectionally.
+SIP allows you to specify 3 Extra ports (TCP) to be opened bidirectionally, 
 
-To Enable:
+These can be changed with any text editor.
+
 ```
 ExtraOne="true"
 ExtraOneP=8888
-```
 
-Anything other than true will be considered false.
-To Disable:
+ExtraTwo="true"
+ExtraTwoP=28018
+
+ExtraThree="false"
+ExtraThreeP=0
 ```
-ExtraOne="false"
-ExtraOneP=8888
-```
-```
-ExtraOne="apples"
-ExtraOneP=8888
-```
+Do not add spaces, They matter when declaring a variable in a shell script.
+
 
 # SecureIPT Contents.
 
