@@ -66,7 +66,7 @@ We limit their requests to 50 packets a second and don't allow them to "burst" p
 
 We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
-#Rule 3: Dump Ugly Packets.
+#Rule 3: Dump Invalid/Malformed Packets.
 
 ```
 sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP 
@@ -89,7 +89,13 @@ If the packet meets any of these conditions, we throw it away because its shit.
 
 
 
-#Rule 3: Block Portscanning Attempts
+#Rule 3: Limit Portscanning.
+
+It is bad to outright block the option to query your ports, 
+
+But you also don't want 40k requests in 1 second.
+
+This is the solution to that.
 
 ```
 sudo iptables -N PORT_SCANNING
@@ -107,6 +113,7 @@ We limit the amount of times any IP can ask for a specific port. (--limit 1/s)
 
 Drop any other Port Scanning attempt.
 
+Chains can create LOG FILES, You should look into this if that is useful in your situation.
 
 # Rule 4: Block LAND Attacks
 
