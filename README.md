@@ -56,10 +56,14 @@ We Jump to ACCEPT the packet and send it to its destination without further ques
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -m limit --limit 50/second --limit-burst 50 -j ACCEPT
 ```
 
-We are Adding an INPUT rule
+We are Adding an INPUT rule.
+
 This is going to apply to already established connections (UDP,TCP) and their related "connections".
+
 We limit their requests to 50 packets a second and don't allow them to "burst" packets.
+
 (This "assumes" your websites main payload will be delivered during the initial connection)
+
 We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
 #Rule 3: Dump Ugly Packets.
@@ -74,9 +78,13 @@ sudo iptables -A INPUT -i eth0 -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
 ```
 
 We are adding several INPUT rules.
+
 These rules only affect TCP related connections.
+
 These rules only apply to Ethernet Interface: `eth0`
+
 We check various TCP Flags to make sure the packet is Valid/Complete and not trying to hang us.
+
 If the packet meets any of these conditions, we throw it away because its shit.
 
 
@@ -92,8 +100,11 @@ sudo iptables -A PORT_SCANNING -j DROP
 ```
 
 We create a new chain to monitor PORT SCANNING attempts.
+
 We make sure any "real" port scan attempts are Complete/Valid. (tcp-flags)
+
 We limit the amount of times any IP can ask for a specific port. (--limit 1/s)
+
 Drop any other Port Scanning attempt.
 
 
@@ -116,7 +127,9 @@ sudo iptables -A INPUT -d 255.255.255.255 -j DROP
 ```
 
 We are creating an INPUT rule.
+
 We check to see if the source/dest is a private IP and drop it.
+
 We check to see if the source/dest is from a private SubNet and drop it.
 
 
@@ -125,7 +138,9 @@ We check to see if the source/dest is from a private SubNet and drop it.
 `sudo iptables -A INPUT -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP`
 
 We are creating an INPUT rule.
+
 It only applys to TCP connections.
+
 We check certain TCP flags are true and DROP the packet.
 
 #Rule 6: Blocking Smurf Attacks
@@ -133,16 +148,23 @@ We check certain TCP flags are true and DROP the packet.
 `sudo iptables -A INPUT -p icmp -m limit --limit 1/second --limit-burst 2 -j ACCEPT`
 
 We are creating an INPUT rule.
+
 It only applys to ICMP packets.
+
 It applys to all Connections. New/Existing.
+
 We limit the amount of requests for an ICMP packet a client can make per second.
+
 We allow a little room for icmp to breathe. (burst)
 
 `sudo iptables -A INPUT -p icmp -j DROP`
 
 We are creating an INPUT rule.
+
 It applys to all Connections. New/Existing.
+
 It only applys to ICMP packets.
+
 We throw away the ICMP packets. (DROP)
 
 #Rule 7: The More Advanced SYN Filter
@@ -156,7 +178,7 @@ If your having real problems with SYN floods, Then you can use this to SEVERELY 
 (!MUST! be run in that order)
 
 
-#Rule 8: NO UDP Please
+#Rule 8: NO UDP except DNS please!
 ```
 sudo iptables -A INPUT -p udp --sport 53 -j ACCEPT
 sudo iptables -A INPUT -p udp --dport 53 -j ACCEPT
@@ -166,8 +188,13 @@ sudo iptables -A INPUT -p udp -j DROP
 sudo iptables -A OUTPUT -p udp -j DROP
 ```
 We are creating an INPUT rule.
+
 The rule only applys to UDP packets.
+
 The rule only applys to Port 53 (DNS)
+
 We accept UDP packets go to the DNS server.
+
 We accept UDP packets coming from the DNS server.
+
 We DROP anything else. 
