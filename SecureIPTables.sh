@@ -5,7 +5,7 @@
 # SYN Floods, TCP Floods, Handshake Exploits, XMAS Packets,                       #
 # Smurf Attacks, ICMP Bombs, LAND attacks and RST Floods.                         #
 #                                                                                 #
-# Copyright (C) AdduceLTD, Samuel Christison.                                     #
+# Copyright (C) 2015, Samuel Christison.                                          #
 # This program is free software; you can redistribute it and/or                   #
 # modify it under the terms of the GNU General Public License                     #
 # as published by the Free Software Foundation; either version 2                  #
