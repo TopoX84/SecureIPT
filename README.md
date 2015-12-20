@@ -39,10 +39,15 @@ sudo iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m limit --limit 5
 ```
 
 We are Adding an INPUT rule.
+
 We are applying this to any new TCP connections.
+
 We then limit the amount of "packets" that can be sent in a burst to 200.
+
 When that limit is reached, We limit further attempts to 50 "packets"
+
 (In essence, You speed up for no reason, You get slowed down)
+
 We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
 #Rule 2: Limit Existing Connections
