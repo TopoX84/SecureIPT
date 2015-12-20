@@ -165,4 +165,4 @@ The rule only applys to UDP packets.
 The rule only applys to Port 53 (DNS)
 We accept UDP packets go to the DNS server.
 We accept UDP packets coming from the DNS server.
-We DROP anything else.
+We DROP anything else. 
