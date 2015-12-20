@@ -9,7 +9,9 @@ You will need to run the script as Root. (Required for changing IPTables filters
 
 # Extra Security
 
-You should also install Denyhosts and Fail2Ban because these programs deal with various Authentication Failures, and ban people appropriately. You should research both of them, Because there are a lot of beneficial features.
+You should also install Denyhosts and Fail2Ban because these programs deal with various Authentication Failures and then ban IP Addresses appropriately. (For 3 days by default)
+
+You should research both of these tools, Because there are a lot of beneficial features for businesses big and small.
 
 ```
 sudo apt-get update
