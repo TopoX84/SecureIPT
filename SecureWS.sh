@@ -7,7 +7,8 @@
 # SYN Floods, TCP Floods, Handshake Exploits, XMAS Packets,        #
 # Smurf Attacks, ICMP Bombs, LAND attacks and RST Floods.          #
 # You need to give this script Root privileges Before you run it.  #
-# sudo chmod 777 SecureIT.sh                                       #
+# sudo chmod 777 SecureWS.sh                                       #
+# sudo chmod +x SecureWS.sh                                       #
 #################################################################################################
 # This script by default will leave open ports 80, 25, 53, 443, 22.                             #
 #################################################################################################
