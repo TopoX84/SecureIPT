@@ -44,7 +44,7 @@ If you disregard this notice you will need to run the shell script anyway to fix
 
 *Some of the rules in the script haven't been explained below, I will get around to it.*
 
-#Limit New Connections
+#Rate Limit New Connections
 
 ```
 sudo iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m limit --limit 50/minute --limit-burst 200 -j ACCEPT
@@ -62,7 +62,7 @@ When that limit is reached, We limit further attempts to 50 "packets"
 
 We Jump to ACCEPT the packet and send it to its destination without further questioning.
 
-#Limit Existing Connections
+#Rate Limit Existing Connections
 
 ```
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -m limit --limit 50/second --limit-burst 50 -j ACCEPT
