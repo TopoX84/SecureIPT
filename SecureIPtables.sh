@@ -19,7 +19,7 @@ MAIL=25
 DNS=53
 SSL=443
 SSH=22
-LB=8888
+
 TCPBurstNew=200
 TCPBurstEst=50
 
@@ -28,18 +28,57 @@ TCPBurstEst=50
 #TCPBurstEst is how many packets an existing connection can send in 1 request.#
 ###############################################################################
 
+
+
+#################################################
+############ Extra Ports (TCP) ##################
+ExtraOne="yes"
+ExtraOneP=8888
+
+ExtraTwo="yes"
+ExtraTwoP=28018
+
+ExtraThree="no"
+ExtraThreeP=0
+##################################################
+
+
+
 #########################################################
-#You don't need to change anything below this line               #
+#You don't need to change anything below this line      #
 #########################################################
 
-echo "The setup is planning on configuring IPTables on your behalf"
-echo "The following ports are being set up"
+echo "This script is planning on configuring IPTables on your behalf"
+echo "The following ports are being configured"
 echo "Your SSH Port will be: $SSH"
 echo "Your DNS Port will be: $DNS"
 echo "Your SSL Port will be: $SSL"
 echo "Your MAIL Services SMTP Port will be: $MAIL"
 echo "Your WEB SERVER port will be: $WEB"
 echo "If these are not correct, Please press Ctrl + C NOW"
+
+
+if [ "$ExtraOne" = "yes" ]
+then
+   echo "Opening Extra Port One: $ExtraOneP"
+else
+    echo "Not Using Extra Port One."
+fi
+
+if [ "$ExtraTwo" = "yes" ]
+then
+   echo "Opening Extra Port Two: $ExtraTwoP"
+else
+    echo "Not Using Extra Port Two."
+fi
+
+if [ "$ExtraThree" = "yes" ]
+then
+   echo "Opening Extra Port Three: $ExtraThreeP"
+else
+    echo "Not Using Extra Port Three."
+fi
+
 echo "The installer will continue in 5"
 sleep 1
 echo "The installer will continue in 4"
@@ -50,28 +89,33 @@ echo "The installer will continue in 2"
 sleep 1
 echo "The installer will continue in 1"
 sleep 1
-echo "The installer will now RUN to completion"
+echo "The script will now run to completion"
 sleep 1
+
 echo "Lets start by Flushing your old Rules."
-sleep 0.1
-
+sleep 1
 sudo iptables -F
+echo "Done!"
+sleep 1
 
-echo "Done"
-sleep 0.1
 echo "We need to create the Default rule and Accept LoopBack Input."
-sleep 0.1
+sleep 1
 
 sudo iptables -A INPUT -i lo -p all -j ACCEPT
 
+echo "Done!"
+sleep 1
+
 echo "Enabling the 3 Way Hand Shake and limiting TCP Requests."
-echo "Note if you have cloud flare the limit needs to be rather high or you need to make a set of separate rules for their IP range."
+echo "IF YOU ARE USING CLOUD FLARE AND EXPERIENCE ISSUES INCREASE TCPBurst"
 sleep 2
 
 sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport $WEB -m state --state NEW -m limit --limit 50/minute --limit-burst $TCPBurstNew -j ACCEPT
 sudo iptables -A INPUT -m state --state RELATED,ESTABLISHED -m limit --limit 50/second --limit-burst $TCPBurstEst -j ACCEPT
 
+echo "Done!"
+sleep 1
 echo "Adding Protection from LAND Attacks, If these IPs look required, please stop the script and alter it."
 
 echo "10.0.0.0/8 DROP"
@@ -114,6 +158,9 @@ echo "255.255.255.255 DROP SUBNETS"
 sleep 1
 sudo iptables -A INPUT -d 255.255.255.255 -j DROP
 
+echo "Done!"
+sleep 1
+
 echo "Lets stop ICMP SMURF Attacks at the Door."
 
 sudo iptables -A INPUT -p icmp -m icmp --icmp-type address-mask-request -j DROP
@@ -122,7 +169,8 @@ sudo iptables -A INPUT -p icmp -m icmp --icmp-type 0 -m limit --limit 1/second -
 
 sleep 1
 echo "Done!"
-echo "Next were going to drop all INVALID packets\."
+
+echo "Next were going to drop all INVALID packets."
 
 sudo iptables -A INPUT -m state --state INVALID -j DROP
 sudo iptables -A FORWARD -m state --state INVALID -j DROP
@@ -130,7 +178,7 @@ sudo iptables -A OUTPUT -m state --state INVALID -j DROP
 
 sleep 1
 echo "Done!"
-echo "Next we drop Valid but incomplete packets."
+echo "Next we drop VALID but INCOMPLETE packets. (Idk why this is even possible)"
 
 sudo iptables -A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP 
 sudo iptables -A INPUT -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j DROP 
@@ -141,7 +189,7 @@ sudo iptables -A INPUT -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
 
 sleep 1
 echo "Done!"
-echo "Now we enable RST Flood Protection MORE SMURF PROTECTION"
+echo "Now we're going to enable RST Flood Protection"
 
 sudo iptables -A INPUT -p tcp -m tcp --tcp-flags RST RST -m limit --limit 2/second --limit-burst 2 -j ACCEPT
 
@@ -178,7 +226,7 @@ sudo iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j REJECT
 
 sleep 1
 echo "Done!"
-echo "Allow the following ports through from outside"
+echo "Allowing the following ports through from the outside"
 
 echo "SMTP Port $MAIL"
 sudo iptables -A INPUT -p tcp -m tcp --dport $MAIL -j ACCEPT
@@ -210,8 +258,29 @@ sudo iptables -A INPUT -p tcp -m tcp --dport $SSH -j ACCEPT
 sleep 1
 echo "Done!"
 
-echo "LB Port $LB"
-sudo iptables -A INPUT -p tcp -m tcp --dport $LB -j ACCEPT
+if [ "$ExtraOne" = "yes" ]
+then
+   echo "Extra Port One Opened: $ExtraOneP"
+   iptables -A INPUT -p tcp -m tcp --dport $ExtraOneP -j ACCEPT
+else
+    echo "Not Using Extra Port One.."
+fi
+
+if [ "$ExtraTwo" = "yes" ]
+then
+   echo "Extra Port Two Opened: $ExtraTwoP"
+   iptables -A INPUT -p tcp -m tcp --dport $ExtraTwoP -j ACCEPT
+else
+    echo "Not Using Extra Port Two.."
+fi
+
+if [ "$ExtraThree" = "yes" ]
+then
+   echo "Extra Port Three Opened: $ExtraThreeP"
+   iptables -A INPUT -p tcp -m tcp --dport $ExtraThreeP -j ACCEPT
+else
+    echo "Not Using Extra Port Three.."
+fi
 
 sleep 1
 echo "Done Opening Ports For Web Access!"
@@ -222,7 +291,7 @@ sudo iptables -A INPUT -j REJECT
 sleep 1
 echo "Done\!"
 
-################# Below are for OUTPUT iptables rules #############################################
+################# Below are OUTPUT iptables rules #############################################
 echo "NOW LETS SET UP OUTPUTS"
 
 echo "Default Rule for OUTPUT and our LoopBack Again. We wont be limiting outgoing traffic."
@@ -232,57 +301,84 @@ iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 sleep 1
 echo "Done!"
 
-echo "Allow the following ports Access OUT from the INSIDE"
+echo "Allowing the following ports Access OUT from the INSIDE"
 
 echo "SMTP Port $MAIL"
 iptables -A OUTPUT -p tcp -m tcp --dport $MAIL -j ACCEPT
 
-sleep 1
+sleep 2
 echo "Done!"
 
 echo "DNS Port $DNS"
 iptables -A OUTPUT -p udp -m udp --dport $DNS -j ACCEPT
 
-sleep 1
+sleep 2
 echo "Done!"
 
 echo "Web Port $WEB"
 iptables -A OUTPUT -p tcp -m tcp --dport $WEB -j ACCEPT
 
-sleep 1
+sleep 2
 echo "Done!"
 
 echo "HTTPS Port $SSL"
 iptables -A OUTPUT -p tcp -m tcp --dport $SSL -j ACCEPT
 
-sleep 1
+sleep 2
 echo "Done!"
 
 echo "SSH Port $SSH"
 iptables -A OUTPUT -p tcp -m tcp --dport $SSH -j ACCEPT
 
-sleep 1
+sleep 2
+
+if [ "$ExtraOne" = "yes" ]
+then
+   echo "Extra Port One Opened: $ExtraOneP"
+   iptables -A OUTPUT -p tcp -m tcp --dport $ExtraOneP -j ACCEPT
+else
+    echo "Not Using Extra Port One."
+fi
+
+if [ "$ExtraTwo" = "yes" ]
+then
+   echo "Extra Port Two Opened: $ExtraTwoP"
+   iptables -A OUTPUT -p tcp -m tcp --dport $ExtraTwoP -j ACCEPT
+else
+    echo "Not Using Extra Port Two."
+fi
+
+if [ "$ExtraThree" = "yes" ]
+then
+   echo "Extra Port Three Opened: $ExtraThreeP"
+   iptables -A OUTPUT -p tcp -m tcp --dport $ExtraThreeP -j ACCEPT
+else
+    echo "Not Using Extra Port Three."
+fi
+
+sleep 2
 echo "Done!"
 
-echo "Allow Outgoing PING Type ICMP Requests"
+echo "Allowing Outgoing PING Type ICMP Requests, So we don't break things."
 
 iptables -A OUTPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 
-sleep 1
+sleep 2
 echo "Done!"
 
-echo "Lastly Reject all Output traffic"
+echo "Rejecting all other Output traffic"
 
 iptables -A OUTPUT -j REJECT
 
 sleep 1
 echo "Done!"
 
-echo "Reject Forwarding  traffic"
+echo "Rejecting all Forwarding traffic"
 
 iptables -A FORWARD -j REJECT
 
 sleep 1
+echo "Done!"
 echo "Your Webserver is now more secure then it was 5 minutes ago! Have a nice Day!"
 sleep 3
 exit
