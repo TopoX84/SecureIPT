@@ -38,9 +38,9 @@ ExtraThreeP=0
 
 If you don't know exactly what your current rules are, Just run the shell script. You risk seriously breaking your VPS/Dedi if you mis-configure your firewall. (You might block SSH ports, For instance)
 
-If you disregard this notice you will need to run the shell script anyway to fix whatever you broke, assuming you even have a usable network connection anymore.
+If you disregard this notice you will need to run the shell script anyway to fix whatever you broke, assuming you even have a usable network connection anymore. There is a reason most peoples firewalls are incorrectly configured, It is an extremely unforgiving task.
 
-There is a reason most peoples firewalls are incorrectly configured, It is an extremely unforgiving task.
+**End warning**
 
 #Rule 1: Limit New Connections
 
