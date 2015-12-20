@@ -68,13 +68,20 @@ ExtraThreeP=0
 #########################################################
 
 echo "This script is planning on configuring IPTables on your behalf"
+sleep 0.2
 echo "The following ports are being configured"
+sleep 0.2
 echo "Your SSH Port will be: $SSH"
+sleep 0.2
 echo "Your DNS Port will be: $DNS"
+sleep 0.2
 echo "Your SSL Port will be: $SSL"
+sleep 0.2
 echo "Your MAIL Services SMTP Port will be: $MAIL"
+sleep 0.2
 echo "Your WEB SERVER port will be: $WEB"
-echo "If these are not correct, Please press Ctrl + C NOW"
+sleep 0.2
+echo "If these are not correct, Please press Ctrl + C NOW and edit with a Text Editor"
 
 
 if [ "$ExtraOne" = "yes" ]
@@ -83,21 +90,20 @@ then
 else
     echo "Not Using Extra Port One.."
 fi
-
+sleep 1
 if [ "$ExtraTwo" = "yes" ]
 then
    echo "Opening Extra Port Two: $ExtraTwoP"
 else
     echo "Not Using Extra Port Two.."
 fi
-
+sleep 1
 if [ "$ExtraThree" = "yes" ]
 then
    echo "Opening Extra Port Three: $ExtraThreeP"
 else
     echo "Not Using Extra Port Three.."
 fi
-
 echo "The installer will continue in 5"
 sleep 1
 echo "The installer will continue in 4"
@@ -284,7 +290,7 @@ then
 else
     echo "INPUT RULES: Not Using Extra Port One!"
 fi
-
+sleep 0.2
 if [ "$ExtraTwo" = "yes" ]
 then
    echo "Extra Port Two Opened: $ExtraTwoP"
@@ -292,7 +298,7 @@ then
 else
     echo "INPUT RULES: Not Using Extra Port Two!"
 fi
-
+sleep 0.2
 if [ "$ExtraThree" = "yes" ]
 then
    echo "Extra Port Three Opened: $ExtraThreeP"
