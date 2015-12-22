@@ -2,9 +2,9 @@
 
 **You will need to run this shell script as Root to get the full benefits**
 
-A Shell script that sets up your firewall (IPtables) to mitigate common Denial of Service attacks.
+A Shell script that sets up your firewall (IPtables) to *help* mitigate common Denial of Service attacks.
 
-A big enough *Distributed* Denial of Service attack will not be stopped by this, but it raises the bar *significantly* (TDS) In theory if your server is fast enough to throw away the packets it should never go "down" and you can give IPtables a leg-up towards this end by setting its CPU Priority to be extremely high. 
+A big enough *Distributed* Denial of Service attack will not be stopped by this, but it raises the bar. In theory if your server is fast enough to throw away the packets it should never go "down" and you can give IPtables a leg-up towards this end by setting its CPU Priority to be extremely high. 
 
 `renice {priority} pid`
 
@@ -38,9 +38,6 @@ ExtraThreeP=0
 
 If you don't know exactly what your current rules are, Just run the shell script. You risk seriously breaking your VPS/Dedi if you mis-configure your firewall. (You might block SSH ports, For instance)
 
-If you disregard this notice you will need to run the shell script anyway to fix whatever you broke, assuming you even have a usable network connection anymore. There is a reason most peoples firewalls are incorrectly configured, It is an extremely unforgiving task.
-
-**End warning**
 
 *Some of the rules in the script haven't been explained below, I will get around to it.*
 
