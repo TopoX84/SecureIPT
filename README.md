@@ -2,7 +2,7 @@
 
 **You will need to run this shell script as Root to get the full benefits**
 
-A Shell script that sets up your firewall (IPtables) to completely mitigate common Denial of Service attacks.
+A Shell script that sets up your firewall (IPtables) to mitigate common Denial of Service attacks.
 
 A big enough *Distributed* Denial of Service attack will not be stopped by this, but it raises the bar *significantly* (TDS) In theory if your server is fast enough to throw away the packets it should never go "down" and you can give IPtables a leg-up towards this end by setting its CPU Priority to be extremely high. 
 
