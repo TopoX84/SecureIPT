@@ -55,12 +55,12 @@ TCPBurstEst=50
 ########################################################
 
 ExtraOne="yes"
-ExtraOneP=8888
+ExtraOneP=26969
 
-ExtraTwo="yes"
+ExtraTwo="no"
 ExtraTwoP=28018
 
-ExtraThree="yes"
+ExtraThree="no"
 ExtraThreeP=0
 
 #########################################################
