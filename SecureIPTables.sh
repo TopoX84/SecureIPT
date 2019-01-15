@@ -54,13 +54,13 @@ TCPBurstEst=50
 # Extra Ports to be Bi-Directionally Opened (TCP)      #
 ########################################################
 
-ExtraOne="true"
+ExtraOne="yes"
 ExtraOneP=8888
 
-ExtraTwo="true"
+ExtraTwo="yes"
 ExtraTwoP=28018
 
-ExtraThree="false"
+ExtraThree="yes"
 ExtraThreeP=0
 
 #########################################################
